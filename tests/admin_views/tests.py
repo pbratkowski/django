@@ -5754,8 +5754,13 @@ class SeleniumTests(AdminSeleniumTestCase):
         and with stacked and tabular inlines.
         Refs #13068, #9264, #9983, #9784.
         """
+        import time
+
         from selenium.webdriver import ActionChains
+        from selenium.webdriver.common.actions.wheel_input import ScrollOrigin
         from selenium.webdriver.common.by import By
+
+        viewport_origin = ScrollOrigin.from_viewport()
 
         self.admin_login(
             username="super", password="secret", login_url=reverse("admin:index")
@@ -5852,6 +5857,10 @@ class SeleniumTests(AdminSeleniumTestCase):
         status = self.selenium.find_element(
             By.ID, "id_relatedprepopulated_set-2-0-status"
         )
+        _x_offset = int(status.location["x"])
+        _y_offset = int(status.location["y"])
+        ActionChains(self.selenium).scroll_from_origin(viewport_origin, _x_offset, _y_offset).perform()
+        time.sleep(0.1)
         ActionChains(self.selenium).move_to_element(status).click(status).perform()
         self.selenium.find_element(
             By.ID, "id_relatedprepopulated_set-2-0-pubdate"
@@ -5886,6 +5895,10 @@ class SeleniumTests(AdminSeleniumTestCase):
         status = self.selenium.find_element(
             By.ID, "id_relatedprepopulated_set-2-1-status"
         )
+        _x_offset = int(status.location["x"])
+        _y_offset = int(status.location["y"])
+        ActionChains(self.selenium).scroll_from_origin(viewport_origin, _x_offset, _y_offset).perform()
+        time.sleep(0.1)
         ActionChains(self.selenium).move_to_element(status).click(status).perform()
         self.select_option("#id_relatedprepopulated_set-2-1-status", "option one")
         self.selenium.find_element(
@@ -5914,6 +5927,10 @@ class SeleniumTests(AdminSeleniumTestCase):
         row_id = "id_relatedprepopulated_set-4-0-"
         self.selenium.find_element(By.ID, f"{row_id}pubdate").send_keys("2011-12-12")
         status = self.selenium.find_element(By.ID, f"{row_id}status")
+        _x_offset = int(status.location["x"])
+        _y_offset = int(status.location["y"])
+        ActionChains(self.selenium).scroll_from_origin(viewport_origin, _x_offset, _y_offset).perform()
+        time.sleep(0.1)
         ActionChains(self.selenium).move_to_element(status).click(status).perform()
         self.select_option(f"#{row_id}status", "option one")
         self.selenium.find_element(By.ID, f"{row_id}name").send_keys(
@@ -5928,6 +5945,17 @@ class SeleniumTests(AdminSeleniumTestCase):
         self.assertEqual(slug1, "stacked-inline-2011-12-12")
         self.assertEqual(slug2, "option-one")
         # Add inline.
+        _el = self.selenium.find_elements(
+            By.LINK_TEXT,
+            "Add another Related prepopulated",
+        )[3]
+        # For whatever reason, this breaks for this element...
+        # _x_offset = int(_el.location["x"])
+        # Only a large-ish negative offset appears to work
+        _x_offset = -512
+        _y_offset = int(_el.location["y"])
+        ActionChains(self.selenium).scroll_from_origin(viewport_origin, _x_offset, _y_offset).perform()
+        time.sleep(0.1)
         self.selenium.find_elements(
             By.LINK_TEXT,
             "Add another Related prepopulated",
@@ -5935,6 +5963,10 @@ class SeleniumTests(AdminSeleniumTestCase):
         row_id = "id_relatedprepopulated_set-4-1-"
         self.selenium.find_element(By.ID, f"{row_id}pubdate").send_keys("1999-01-20")
         status = self.selenium.find_element(By.ID, f"{row_id}status")
+        _x_offset = int(status.location["x"])
+        _y_offset = int(status.location["y"])
+        ActionChains(self.selenium).scroll_from_origin(viewport_origin, _x_offset, _y_offset).perform()
+        time.sleep(0.1)
         ActionChains(self.selenium).move_to_element(status).click(status).perform()
         self.select_option(f"#{row_id}status", "option two")
         self.selenium.find_element(By.ID, f"{row_id}name").send_keys(
