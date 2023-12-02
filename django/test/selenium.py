@@ -215,6 +215,18 @@ class SeleniumTestCase(LiveServerTestCase, metaclass=SeleniumTestCaseBase):
         finally:
             self.selenium.implicitly_wait(self.implicit_wait)
 
+    def get_element(self, selector_class, selector, offset=0):
+        """
+        Get the first matching element from the current page, or the n-th
+        element if offset is provided.
+        """
+        if offset:
+            element = self.selenium.find_elements(selector_class, selector)[offset]
+        else:
+            element = self.selenium.find_element(selector_class, selector)
+        self.selenium.execute_script("arguments[0].scrollIntoView(true);", element)
+        return element
+
 
 def screenshot_cases(method_names):
     if isinstance(method_names, str):
