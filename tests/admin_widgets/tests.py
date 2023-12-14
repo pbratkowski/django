@@ -1717,9 +1717,10 @@ class AdminRawIdWidgetSeleniumTests(AdminWidgetSeleniumTestCase):
 
 class RelatedFieldWidgetSeleniumTests(AdminWidgetSeleniumTestCase):
     def test_ForeignKey_using_to_field(self):
-        from selenium.webdriver import ActionChains
         from selenium.webdriver.common.by import By
         from selenium.webdriver.support.ui import Select
+
+        from django.test.element_chains import ElementChains
 
         self.admin_login(username="super", password="secret", login_url="/")
         with self.wait_page_loaded():
@@ -1772,7 +1773,7 @@ class RelatedFieldWidgetSeleniumTests(AdminWidgetSeleniumTestCase):
         )
 
         element = self.selenium.find_element(By.ID, "view_id_user")
-        ActionChains(self.selenium).move_to_element(element).click(element).perform()
+        ElementChains(self.selenium).move_to_element(element).click(element).perform()
         self.wait_for_value("#id_username", "changednewuser")
         self.selenium.back()
 
